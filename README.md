@@ -9,6 +9,8 @@ can't do those pre-boot; everything here is a pre-baked static asset).
 ### Recommended: `install.sh`
 
 ```
+git clone https://github.com/shoxjaxon-atabayev/vitreum-refind.git
+cd vitreum-refind
 sudo ./install.sh
 ```
 
