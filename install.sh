@@ -298,7 +298,11 @@ do_install() {
   while IFS= read -r f; do
     install -m 0644 "$SCRIPT_DIR/$f" "$target_dir/$f"
   done < <(required_assets)
-  cp -a "$SCRIPT_DIR/icons" "$target_dir/icons"
+  # Plain cp -r, not -a: the ESP is FAT, which has no per-file ownership
+  # at all, so "preserve ownership" (what -a/-p do) fails with EPERM even
+  # as root — FAT only supports it as a fs-wide mount option, not a
+  # per-file chown target.
+  cp -r "$SCRIPT_DIR/icons" "$target_dir/icons"
   ok "copied theme files to $target_dir"
 
   # Update refind.conf: strip any prior Vitreum block, then append a
@@ -321,7 +325,7 @@ do_install() {
     ok "refind.conf already up to date, nothing to change"
   else
     backup="$(unique_backup_path "${conf}.vitreum-backup")"
-    cp -p "$conf" "$backup"
+    cp "$conf" "$backup"
     cat "$tmp" > "$conf"
     rm -f "$tmp"
     ok "refind.conf updated (backup: $backup)"
@@ -366,7 +370,7 @@ do_uninstall() {
       tmp="$(mktemp)"
       strip_managed_block "$conf" > "$tmp"
       backup="$(unique_backup_path "${conf}.vitreum-backup")"
-      cp -p "$conf" "$backup"
+      cp "$conf" "$backup"
       cat "$tmp" > "$conf"
       rm -f "$tmp"
       ok "removed Vitreum block from $conf (backup: $backup)"
