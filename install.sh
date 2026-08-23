@@ -196,6 +196,31 @@ validate_source_assets() {
   fi
 }
 
+# Sanity-check that every path referenced by a theme conf file actually
+# resolves once installed — rEFInd resolves paths inside an included file
+# relative to refind.conf's directory, not the included file's own
+# directory, so a path that's merely "present on disk" isn't enough; it
+# has to be present at the exact spot rEFInd will look for it.
+validate_installed_paths() {
+  local refind_dir="$1" bucket="$2" f directive value bad=0
+
+  for f in "$refind_dir/$THEME_SUBDIR/theme.conf" "$refind_dir/$THEME_SUBDIR/theme-$bucket.conf"; do
+    [ -f "$f" ] || { warn "expected file missing after install: $f"; bad=1; continue; }
+    while read -r directive value; do
+      case "$directive" in
+        icons_dir)
+          [ -d "$refind_dir/$value" ] || { warn "$f: icons_dir '$value' not found under $refind_dir"; bad=1; }
+          ;;
+        selection_big|selection_small|banner|include)
+          [ -f "$refind_dir/$value" ] || { warn "$f: $directive '$value' not found under $refind_dir"; bad=1; }
+          ;;
+      esac
+    done < <(awk '!/^[[:space:]]*#/ && NF>=2 {print $1, $2}' "$f")
+  done
+
+  [ "$bad" -eq 0 ] || die "post-install validation failed — paths above don't resolve the way rEFInd will read them."
+}
+
 # Remove any existing Vitreum-managed block from a conf file, print result
 # to stdout (caller redirects to a temp file). Safe to run on a file with
 # no block at all.
@@ -212,7 +237,7 @@ strip_managed_block() {
 # ------------------------------------------------------------------ main --
 
 do_install() {
-  local resolution bucket refind_dir target_dir conf backup tmp installs count
+  local resolution bucket refind_dir target_dir conf backup tmp installs count body
 
   echo "Vitreum rEFInd theme installer"
   echo
@@ -304,6 +329,9 @@ do_install() {
   # per-file chown target.
   cp -r "$SCRIPT_DIR/icons" "$target_dir/icons"
   ok "copied theme files to $target_dir"
+
+  validate_installed_paths "$refind_dir" "$bucket"
+  ok "all theme paths resolve correctly from refind.conf's directory"
 
   # Update refind.conf: strip any prior Vitreum block, then append a
   # fresh one. Back up first — but only if this run actually changes
