@@ -85,16 +85,20 @@ candidate_roots() {
 
 # Look for refind.conf under each candidate root, keep only ones that sit
 # beside an actual rEFInd binary (i.e. a real install, not a stray file).
+# Candidate roots often overlap in practice — the ESP mounted at both
+# /boot/efi and /boot/EFI (or /efi as well), a bind mount, a symlink — so
+# dedup by the (device, inode) of refind.conf itself, not by path string,
+# or the same install shows up twice and install.sh refuses to proceed.
 find_refind_installs() {
-  local root conf dir found=""
+  local root conf dir key found=""
   while IFS= read -r root; do
     while IFS= read -r conf; do
       dir="$(dirname "$conf")"
-      if ls "$dir"/refind_*.efi >/dev/null 2>&1; then
-        case ",$found," in *",$dir,"*) continue ;; esac
-        found="$found,$dir"
-        printf '%s\n' "$dir"
-      fi
+      ls "$dir"/refind_*.efi >/dev/null 2>&1 || continue
+      key="$(stat -c '%d:%i' "$conf" 2>/dev/null || printf 'path:%s' "$conf")"
+      case ",$found," in *",$key,"*) continue ;; esac
+      found="$found,$key"
+      printf '%s\n' "$dir"
     done < <(find "$root" -maxdepth 5 -iname 'refind.conf' 2>/dev/null)
   done < <(candidate_roots)
 }
