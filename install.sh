@@ -166,7 +166,6 @@ resolution_to_bucket() {
 
 required_assets() {
   cat <<'EOF'
-theme.conf
 theme-sd.conf
 theme-hd.conf
 theme-hidpi.conf
@@ -196,15 +195,15 @@ validate_source_assets() {
   fi
 }
 
-# Sanity-check that every path referenced by a theme conf file actually
-# resolves once installed — rEFInd resolves paths inside an included file
-# relative to refind.conf's directory, not the included file's own
-# directory, so a path that's merely "present on disk" isn't enough; it
-# has to be present at the exact spot rEFInd will look for it.
+# Sanity-check that every path referenced by the bucket conf file actually
+# resolves once installed. The bucket file is deliberately self-contained
+# (see the comment at the top of any theme-*.conf) — a path that's merely
+# "present on disk" isn't enough; it has to be present at the exact spot
+# rEFInd will look for it, relative to refind.conf's own directory.
 validate_installed_paths() {
   local refind_dir="$1" bucket="$2" f directive value bad=0
 
-  for f in "$refind_dir/$THEME_SUBDIR/theme.conf" "$refind_dir/$THEME_SUBDIR/theme-$bucket.conf"; do
+  for f in "$refind_dir/$THEME_SUBDIR/theme-$bucket.conf"; do
     [ -f "$f" ] || { warn "expected file missing after install: $f"; bad=1; continue; }
     while read -r directive value; do
       case "$directive" in

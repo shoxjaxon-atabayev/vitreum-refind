@@ -58,10 +58,11 @@ Useful flags:
 ## Layout
 
 - `install.sh` — the installer described above (also handles `--uninstall`).
-- `theme.conf` — settings shared by every bucket (icon sizes, selection
-  highlight, `icons_dir`).
-- `theme-<bucket>.conf` — one per resolution, includes `theme.conf` and
-  adds only the background for that bucket.
+- `theme-<bucket>.conf` — one per resolution, fully self-contained
+  (icon sizes, selection highlight, `icons_dir`, background) — not split
+  into a shared file, because rEFInd resolves paths in a nested `include`
+  relative to the wrong directory; see the comment at the top of any of
+  these files.
 - `background-<bucket>.png` — the frosted-glass backdrop.
 - `selection-big.png` / `selection-small.png` (+ `@2x` for HiDPI) — the
   glass highlight behind the focused entry.
