@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  .canvas {
+    width: 680px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .glass-bar {
+    position: relative;
+    width: 640px;
+    height: 56px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(77, 255, 160, 0.5);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.4),
+      0 0 30px rgba(77, 255, 160, 0.18),
+      inset 0 1px 0 rgba(255,255,255,0.16),
+      inset 0 0 16px rgba(77,255,160,0.06);
+  }
+  .glass-bar::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 45%;
+    height: 60%;
+    border-radius: 7px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.09), transparent 70%);
+  }
+</style>
+</head>
+<body>
+  <div class="canvas"><div class="glass-bar"></div></div>
+</body>
+</html>
