@@ -37,5 +37,3 @@ can't do those pre-boot; everything here is a pre-baked static asset).
 - `icons/` — empty; drop your icon set here.
 - `src/` — HTML sources the baked PNGs were rendered from, plus the
   original wallpaper they're derived from, kept for regeneration.
-
-See `PROJECT_SPEC.md` (local, untracked) for the full design spec.
