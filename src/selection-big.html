@@ -5,38 +5,53 @@
 <style>
   html, body { margin: 0; padding: 0; background: transparent; }
   .canvas {
-    width: 220px;
-    height: 220px;
+    width: 280px;
+    height: 280px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .glass-square {
+  .os {
     position: relative;
-    width: 160px;
-    height: 160px;
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(77, 255, 160, 0.55);
+    width: 210px;
+    height: 210px;
+    border-radius: 18px;
+    border: 1px solid rgba(190, 255, 210, 0.38);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.075),
+      rgba(20, 40, 28, 0.48)
+    );
     box-shadow:
-      0 0 0 1px rgba(0,0,0,0.4),
-      0 0 48px rgba(77, 255, 160, 0.22),
-      inset 0 1px 0 rgba(255,255,255,0.18),
-      inset 0 0 26px rgba(77,255,160,0.07);
+      inset 0 1px 0 rgba(255, 255, 255, 0.11),
+      0 0 0 1px rgba(56, 255, 114, 0.06),
+      0 0 32px rgba(56, 255, 114, 0.13);
   }
-  .glass-square::after {
+  .os::before {
+    /* the signature glowing top bar that marks the selected entry */
     content: "";
     position: absolute;
-    top: 7px;
-    left: 7px;
-    right: 30%;
-    height: 40%;
-    border-radius: 9px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.10), transparent 70%);
+    top: -2px;
+    left: 18%;
+    right: 18%;
+    height: 2px;
+    background: #38ff72;
+    box-shadow:
+      0 0 8px #38ff72,
+      0 0 24px rgba(56, 255, 114, 0.65);
+    border-radius: 99px;
+  }
+  .os::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 35%);
+    pointer-events: none;
   }
 </style>
 </head>
 <body>
-  <div class="canvas"><div class="glass-square"></div></div>
+  <div class="canvas"><div class="os"></div></div>
 </body>
 </html>
