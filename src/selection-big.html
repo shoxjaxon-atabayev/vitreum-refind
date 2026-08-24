@@ -5,53 +5,105 @@
 <style>
   html, body { margin: 0; padding: 0; background: transparent; }
   .canvas {
-    width: 280px;
-    height: 280px;
+    width: 300px;
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
+
   .os {
     position: relative;
-    width: 210px;
-    height: 210px;
-    border-radius: 18px;
-    border: 1px solid rgba(190, 255, 210, 0.38);
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.075),
-      rgba(20, 40, 28, 0.48)
-    );
+    width: 216px;
+    height: 216px;
+    border-radius: 26px;
+    overflow: hidden;
+
+    /* frosted glass body: a real translucent wash, not a hairline —
+       layered radial "liquid" highlights simulate uneven refraction
+       through thick glass instead of one flat gradient */
+    background:
+      radial-gradient(120% 90% at 22% 12%, rgba(255,255,255,0.30), transparent 55%),
+      radial-gradient(90% 70% at 85% 90%, rgba(120,255,180,0.16), transparent 60%),
+      radial-gradient(70% 60% at 80% 15%, rgba(255,255,255,0.14), transparent 55%),
+      linear-gradient(155deg, rgba(255,255,255,0.10), rgba(20,45,32,0.62) 65%);
+
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.11),
-      0 0 0 1px rgba(56, 255, 114, 0.06),
-      0 0 32px rgba(56, 255, 114, 0.13);
+      inset 0 1px 0 rgba(255,255,255,0.55),
+      inset 0 0 0 1px rgba(255,255,255,0.10),
+      inset 0 -18px 30px -20px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(56,255,114,0.10),
+      0 10px 40px rgba(0,0,0,0.5),
+      0 0 46px rgba(56,255,114,0.22);
+
+    border: 1.5px solid rgba(210,255,225,0.55);
   }
+
+  /* thin bright inner rim, inset from the outer border — the "cut
+     crystal edge" read that separates real glass from a flat outline */
   .os::before {
-    /* the signature glowing top bar that marks the selected entry */
     content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 23px;
+    border: 1px solid rgba(255,255,255,0.20);
+    pointer-events: none;
+  }
+
+  /* the signature glowing top bar that marks the selected entry */
+  .top-bar {
     position: absolute;
     top: -2px;
-    left: 18%;
-    right: 18%;
-    height: 2px;
-    background: #38ff72;
+    left: 22%;
+    right: 22%;
+    height: 2.5px;
+    background: #46ff85;
     box-shadow:
-      0 0 8px #38ff72,
-      0 0 24px rgba(56, 255, 114, 0.65);
+      0 0 10px #46ff85,
+      0 0 28px rgba(70,255,130,0.75),
+      0 0 60px rgba(70,255,130,0.35);
     border-radius: 99px;
+    z-index: 2;
   }
-  .os::after {
-    content: "";
+
+  /* diagonal specular sheen, like light raking across curved glass */
+  .sheen {
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 35%);
+    top: -30%;
+    left: -20%;
+    width: 70%;
+    height: 60%;
+    background: linear-gradient(
+      120deg,
+      rgba(255,255,255,0.38),
+      rgba(255,255,255,0.06) 40%,
+      transparent 70%
+    );
+    transform: rotate(-12deg);
+    filter: blur(2px);
+    pointer-events: none;
+  }
+
+  /* soft green pool at the base, like glass pooling light at the foot */
+  .pool {
+    position: absolute;
+    bottom: -22%;
+    left: 10%;
+    right: 10%;
+    height: 46%;
+    background: radial-gradient(closest-side, rgba(56,255,114,0.20), transparent 75%);
+    filter: blur(3px);
     pointer-events: none;
   }
 </style>
 </head>
 <body>
-  <div class="canvas"><div class="os"></div></div>
+  <div class="canvas">
+    <div class="os">
+      <div class="pool"></div>
+      <div class="sheen"></div>
+      <div class="top-bar"></div>
+    </div>
+  </div>
 </body>
 </html>
